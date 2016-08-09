@@ -5,18 +5,13 @@ const LINE_PADDING = 5
 const FONT_STYLE = "bold 0.8pc Monospace"
 const ITEM_MARGIN = 7
 
-const LINE_COLOR = "#222222"
+let colors;
 
 const HOSTNAME_COLOR = "#00D0FF"
 const MEMORY_INFO_COLOR = "#FFFFFF"
 const UPTIME_INFO_COLOR = "#FFCC00"
 
-var items = [
-  withColor(require("./lib/info-items/hostname"), HOSTNAME_COLOR),
-  withColor(require("./lib/info-items/memory"), MEMORY_INFO_COLOR),
-  withColor(require("./lib/info-items/uptime"), UPTIME_INFO_COLOR),
-  require("./lib/info-items/cpu"),
-]
+let items = [];
 
 exports.decorateTerm = (Term, { React, notify }) => {
   return class extends React.Component {
@@ -35,6 +30,19 @@ exports.decorateTerm = (Term, { React, notify }) => {
      */
     _onTerminal (term) {
       if (this.props.onTerminal) this.props.onTerminal(term)
+
+      colors = {
+        line: '#007cca',
+        host: this.props.colors[1]
+      };
+
+      items = [
+        withColor(require("./lib/info-items/hostname"), colors.host) //,
+        // withColor(require("./lib/info-items/memory"), MEMORY_INFO_COLOR),
+        // withColor(require("./lib/info-items/uptime"), UPTIME_INFO_COLOR),
+        // require("./lib/info-items/cpu"),
+      ]
+
       this._div = term._div
       this._window = term.document_.defaultView
       this._initCanvas()
@@ -100,7 +108,7 @@ exports.decorateTerm = (Term, { React, notify }) => {
 
       ctx.clearRect(0, 0, canvasWidth, canvasHeight)
 
-      ctx.fillStyle=LINE_COLOR
+      ctx.fillStyle = colors.line;
       ctx.fillRect(0,canvasHeight - LINE_HEIGHT,canvasWidth, LINE_HEIGHT)
 
       ctx.font = FONT_STYLE
